@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Add Query/Review on {{obj.name}} {% if obj.product %} Order for '{{obj.product}}'{%endif%}</h2>
+<a href="{{request.META.HTTP_REFERER}}">Back</a><br><br>
+<form method="post">
+    {%csrf_token%}
+    {{form.as_p}}
+    <input type="submit" value="add">
+</form>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h3>Search Spleen:</h3>
+    <form method="POST" action="/">
+        {% csrf_token %}
+        <input type="text" name="q" placeholder="Enter Product">
+        <input type="submit" value="Search">
+    </form><br>
+    <h2>Categories({{data_c}})</h2>
+    {% for data in data %}
+        <a href="{% url 'category' data %}">{{data.name}}</a>&nbsp; &nbsp;
+    {%endfor%}<hr><br>
+    <h2>Products({{obj_c}})</h2><a href="{% url 'orders' %}">View orders</a><br><hr><br>
+    {% for obj in obj %}
+        <img src='{{obj.image.url}}' style='width:200px; height:200px;'><br><br>
+        <a href="{% url 'detail' obj.pk %}"><b>{{obj.name}}</b></a> &nbsp; &nbsp; &nbsp; &nbsp; Likes: {{obj.number_of_likes}}
+        <p>{{obj.description|slice:25}}...</p>
+        <p>Category: <a href="{% url 'category' obj.category %}">{{obj.category}}</a> &nbsp; &nbsp;<span style="font-size: larger; font-weight: bolder;">${{obj.price}}</span></p>
+    {% empty %}
+        <p>No results found</p>
+    {%endfor%}
+{% endblock %}

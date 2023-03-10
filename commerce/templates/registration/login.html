@@ -1,0 +1,9 @@
+<h2>Log In With Spleen</h2>
+<a href="{{request.META.HTTP_REFERER}}">Back</a>
+<form method="post">
+    {%csrf_token%}
+    {{form.as_p}}
+    <input type="checkbox">Remember Me<br><br>
+    <input type="submit" value="Log In">
+</form>
+Register <a href="{% url 'register' %}">HERE</a>

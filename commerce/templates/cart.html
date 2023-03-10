@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Orders</h2>
+<a href="/">Back</a><br><br>
+<table border="1">
+<tr>
+    <th>S/N</th>
+    <th>Product</th>
+    <th>Quantity</th>
+    <th>Price</th>
+    <th>Date Ordered</th>
+    <th>Status</th>
+</tr>
+{% for obj in obj %}
+<tr>
+    <td>{{forloop.counter}}</td>
+    <td><a href="{% url 'detailorder' obj.pk %}">{{obj.product}}</a></td>
+    <td>{{obj.quantity}}</td>
+    <td>${{obj.price}}</td>
+    <td>{{obj.date_added}}</td>
+    <td>Delivered: {% if obj.delivered == False %}<i>loading...</i>{% else %}Done{%endif%}</td>
+</tr>
+{%empty%}
+No Orders at the moment
+{% endfor %}
+</table>
+{% endblock %}

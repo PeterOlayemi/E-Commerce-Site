@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Add To Cart</h2>
+    <a href="{% url 'detail' obj.pk %}">Back</a>
+    <p><h3>Product: {{obj.name}}</h3>
+    Price: &nbsp; &nbsp; <span style="font-size: 25px; font-weight: bolder;">{{obj.price}} per one</span></p>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Add">
+    </form>
+{% endblock %}

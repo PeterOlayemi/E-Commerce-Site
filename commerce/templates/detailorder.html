@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Order Detail</h2>
+<a href="{{request.META.HTTP_REFERER}}">Back</a><br><br>
+Product: {{obj.product}}<br>
+Quantity: {{obj.quantity}}<br>
+Price: {{obj.price}}<br>
+Date: {{obj.date_added}}<br>
+Delivered: {% if obj.delivered == False %}<i>loading...</i>{% else %}Done{%endif%}
+<br><br><br>
+{% if obj.paid == False %}
+To continue, send the amount for the product to this account:<br><br>
+    Peter Olayemi<br>
+    2216346328<br>
+    Zenith Bank<br><br>
+then upload payment receipt here:
+<form method="POST", enctype="multipart/form-data">
+    {%csrf_token%}
+    {{form.as_p}}
+    <input type="submit" value="submit">
+</form>
+{%endif%}
+{% if obj.sent_receipt == True %}
+    <br>Receipt has been received. Delivery will commence once payment is received<br><br>
+{%endif%}
+{% if obj.paid == True %}
+<p>Payment has been received. Expect delivery in 7 days</p>
+{%endif%}
+{% if obj.delivered == True %}
+<p>Order has been delivered. Thanks for using Spleen. <br><br>
+<a href="{% url 'addquery' obj.pk %}">Query Order</a></p>
+{%endif%}
+{% if obj.queried == True %}
+<p>Query has been received. We will get back to you at {{user.email}}</p>
+{%endif%}
+{% endblock %}
