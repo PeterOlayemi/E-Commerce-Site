@@ -3,7 +3,7 @@
 {% block content %}
     <a href="/">Back</a>
     <h2>{{obj.name}}</h2>
-    Category: <a href="{% url 'category' obj.category %}">{{obj.category}}</a> &nbsp; &nbsp; <span style="font-weight: bolder; font-size: 25px;">${{obj.price}}</span><br><br>
+    Category: <a href="{% url 'category' obj.category %}">{{obj.category}}</a> &nbsp; &nbsp; <span style="font-weight: bolder; font-size: 25px;">NGN {{obj.price}}</span><br><br>
     <img src="{{obj.image.url}}" style="height: 200px; width: 200px;"><br><br>
     <p>Description: {{obj.description}}</p>
     <p>Search Tags: {{obj.search_tag1}} {% if obj.search_tag2 %}&nbsp; &nbsp; {{obj.search_tag2}} {% endif %} {% if obj.search_tag3 %}&nbsp; &nbsp; {{obj.search_tag3}}{% endif %}</p>

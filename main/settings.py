@@ -40,7 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
 
-    'commerce'
+    'commerce',
+    'django_countries'
 ]
 
 MIDDLEWARE = [
@@ -135,3 +136,7 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = '/'
 
 LOGOUT_REDIRECT_URL = '/'
+
+PAYSTACK_SECRET_KEY = config('PAYSTACK_SECRET_KEY')
+
+PAYSTACK_PUBLIC_KEY = config('PAYSTACK_PUBLIC_KEY')

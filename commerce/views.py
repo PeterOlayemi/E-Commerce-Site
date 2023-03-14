@@ -1,12 +1,54 @@
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.conf import settings
 from django.db.models import Q
 
 from .models import *
 from .forms import *
 
 # Create your views here.
+
+@login_required
+def OrderedProductView(request):
+    obj = Cart.objects.filter(buyer=request.user, ordered=True).order_by('-date_ordered')
+    context = {'obj':obj}
+    return render(request, 'carted.html', context)
+
+@login_required
+def VerifyPaymentView(request, ref, pk):
+    payment = Payment.objects.get(ref=ref)
+    verified = payment.verify_payment()
+    if verified:
+        obj = Cart.objects.get(id=pk)
+        obj.ordered = True
+        obj.save()
+        return render(request, "success.html")
+    else:
+        return render(request, "error.html")
+
+@login_required
+def CheckOutView(request, id):
+    obj = Cart.objects.get(id=id)
+    form = CheckOutForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            data = form.save(commit=False)
+            data.buyer = request.user
+            data.cart = obj
+            data.save()
+            pk = settings.PAYSTACK_PUBLIC_KEY
+            payment = Payment.objects.create(price=obj.get_price(), email=data.email, buyer=request.user)
+            payment.save()
+            context = {
+                'obj':obj,
+                'payment': payment,
+                'field_values': request.POST,
+                'paystack_pub_key': pk,
+                'price_value': payment.price_value(),
+            }
+            return render(request, 'payment.html', context)
+    return render(request, 'check.html', {"form":form, 'obj':obj})            
 
 def CategoryView(request, category):
     obj = Product.objects.filter(category__name=category)
@@ -16,7 +58,7 @@ def CategoryView(request, category):
 
 @login_required
 def QueryView(request, pk):
-    obj = Order.objects.filter(buyer=request.user).get(id=pk)
+    obj = Cart.objects.filter(buyer=request.user).get(id=pk)
     form = QueryForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
@@ -26,7 +68,7 @@ def QueryView(request, pk):
             data.save()
             obj.queried = True
             obj.save()
-            return redirect(reverse('detailorder', args=[obj.pk]))
+            return render(request, 'queried.html')
     context = {'form':form, 'obj':obj}
     return render(request, 'addreview.html', context)
 
@@ -75,40 +117,23 @@ def RegisterView(request):
     return render(request, 'registration/register.html', context)
 
 @login_required
-def DetailOrderView(request, pk):
-    obj = Order.objects.filter(buyer=request.user).get(id=pk)
-    if request.method != 'POST':
-        form = ReceiptForm()
-    else:
-        form = ReceiptForm(request.POST, request.FILES)
-        if form.is_valid():
-            data = form.save(commit=False)
-            data.order = obj
-            data.save()
-            obj.sent_receipt = True
-            obj.save()
-            return redirect(reverse('detailorder', args=[obj.pk]))
-    context = {'obj':obj, 'form':form}
-    return render(request, 'detailorder.html', context)
-
-@login_required
-def OrderView(request):
-    obj = Order.objects.filter(buyer=request.user).order_by('-date_added')
+def CartView(request):
+    obj = Cart.objects.filter(buyer=request.user, ordered=False).order_by('-date_ordered')
     context = {'obj':obj}
     return render(request, 'cart.html', context)
 
 @login_required
-def AddOrderView(request, name):
+def AddCartView(request, name):
     obj = Product.objects.get(name = name)
-    form = OrderForm(request.POST or None)
+    form = CartForm(request.POST or None)
     if request.method == 'POST':
         if form.is_valid():
             data = form.save(commit=False)
             data.buyer = request.user
             data.product = obj
-            data.price = obj.price * data.quantity
+            data.price = obj.price
             data.save()
-            return redirect(reverse('detailorder', args=[data.pk]))
+            return redirect("orders")
     context = {'form':form, 'obj':obj}
     return render(request, 'addcart.html', context)
 
@@ -124,7 +149,7 @@ def DetailView(request, pk):
 
 def HomeView(request):    
     q = request.POST.get('q') if request.POST.get('q') != None else ''
-    obj = Product.objects.filter( Q(search_tag1__icontains=q) | Q(search_tag2__icontains=q) | Q(search_tag3__icontains=q) | Q(category__name__icontains=q) | Q(name__icontains=q))
+    obj = Product.objects.filter( Q(search_tag1__icontains=q) | Q(search_tag2__icontains=q) | Q(search_tag3__icontains=q) | Q(category__name__icontains=q) | Q(name__icontains=q)).order_by('-date_updated')
     obj_c=Product.objects.all().count()
     data=Category.objects.all()
     data_c=Category.objects.all().count()

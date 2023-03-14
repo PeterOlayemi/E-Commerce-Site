@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Cart</h2>
-<a href="/">Home</a> &nbsp; &nbsp; &nbsp;<a href="{% url 'paid' %}">Paid Orders</a><br><br>
+<h2>Paid Orders</h2>
+<a href="/">Home</a> &nbsp; &nbsp; &nbsp;<a href="{% url 'orders' %}">View Cart</a><br><br>
 {%if obj%}
 <table border="1px" cellspacing="0">
 <tr>
@@ -20,11 +20,11 @@
     <td>{{ob.quantity}}</td>
     <td>NGN {{ob.get_price}}</td>
     <td>{{ob.date_ordered}}</td>
-    <td><a href="{% url 'check' ob.id %}">Check Out Now</a></td>
+    <td><a href="{% url 'query' ob.pk %}">Query Transaction</a></td>
 </tr>
 {%endfor%}
 </table>
 {%else%}
-<p>No Orders at the moment</p>
+<p>No Paid Order at the moment</p>
 {%endif%}
 {% endblock %}

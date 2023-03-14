@@ -1,12 +1,12 @@
 {%extends 'base.html'%}
 
 {%block content%}
-    <h2>Products({{obj_c}})</h2><a href="{% url 'orders' %}">View orders</a><br><hr><br>
+    <h2>Products({{obj_c}})</h2><a href="{% url 'orders' %}">View Cart</a><br><hr><br>
     {% for obj in obj %}
         <img src='{{obj.image.url}}' style='width:200px; height:200px;'><br><br>
         <a href="{% url 'detail' obj.pk %}"><b>{{obj.name}}</b></a> &nbsp; &nbsp; &nbsp; &nbsp; Likes: {{obj.number_of_likes}}
         <p>{{obj.description|slice:25}}...</p>
-        <p>Category: {{obj.category}} &nbsp; &nbsp;<span style="font-size: larger; font-weight: bolder;">${{obj.price}}</span></p>
+        <p>Category: {{obj.category}} &nbsp; &nbsp;<span style="font-size: larger; font-weight: bolder;">NGN {{obj.price}}</span></p>
         <hr><br>
     {% empty %}
         <p>No results found</p><hr><br>

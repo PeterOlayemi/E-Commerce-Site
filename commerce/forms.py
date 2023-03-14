@@ -13,22 +13,22 @@ class ReviewForm(forms.ModelForm):
         model = Review
         fields = ['review']
 
-class ReceiptForm(forms.ModelForm):
-    class Meta:
-        model = OrderReceipt
-        fields = ['receipt']
-
 class QueryForm(forms.ModelForm):
     class Meta:
         model = OrderQuery
-        fields = ['issue']
+        fields = ['email', 'issue']
 
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
         fields = ['name', 'category', 'description', 'price', 'image', 'search_tag1', 'search_tag2', 'search_tag3']
 
-class OrderForm(forms.ModelForm):
+class CartForm(forms.ModelForm):
     class Meta:
-        model = Order
-        fields = ['quantity', 'address', 'nearest_landmark', 'phone_number']
+        model = Cart
+        fields = ['quantity']
+
+class CheckOutForm(forms.ModelForm):
+    class Meta:
+        model = CheckoutAddress
+        fields = ['country', 'zip', 'street_address', 'nearest_landmark', 'email']
