@@ -12,7 +12,7 @@ A site that displays products for sale to the general public, allowing only auth
 ## Installation
 ### 1. Clone Repository & Install Packages
 
-- git clone https://github.com/PeterOlayemi/Blog.git
+- git clone https://github.com/PeterOlayemi/E-Commerce-Site.git
 - pip install -r requirements.txt
 
 ### 2. Migrate & Start Server
